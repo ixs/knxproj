@@ -1,0 +1,29 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+bumpversion = "*"
+coverage = "*"
+flake8 = "*"
+isort = "*"
+mypy = "*"
+pip = "*"
+pydocstyle = "*"
+pylint = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
+wheel = "*"
+pytest = "*"
+
+[packages]
+attrs = "*"
+knxio = {editable = true,path = "./"}
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true  # black
