@@ -3,10 +3,6 @@ Knxproj
 =======
 
 
-
-
-
-
 Tampering with a knx project
 
 
@@ -14,7 +10,14 @@ Tampering with a knx project
 Features
 --------
 
-* TODO
+* Read a .Knxproj
+
+
+TODOS
+-----
+* Check exports from ETS != 5.7
+
+
 
 Credits
 -------

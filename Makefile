@@ -48,7 +48,13 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## check style with flake8
-	flake8 knxproj tests
+	isort -rc .
+	black .
+	flake8 .
+	pydocstyle knxproj tests
+	pylint knxproj
+	mypy knxproj
+
 
 test: ## run tests quickly with the default Python
 	pytest

@@ -5,9 +5,6 @@
 import pytest
 
 
-from knxproj import knxproj
-
-
 @pytest.fixture
 def response():
     """Sample pytest fixture.
