@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "755b7798b46fe5b6ac891affe8384f2ba38602443148c5e4ac9c3ea9d26c2a9a"
+            "sha256": "e6c00c17b3cf7e1fcfb5449699a93f0283f3296fb3b8c9691eacdfd56bfc97c8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -24,7 +24,7 @@
             "index": "pypi",
             "version": "==19.3.0"
         },
-        "knxio": {
+        "knxproj": {
             "editable": true,
             "path": "./"
         }
