@@ -16,6 +16,14 @@ Features
 TODOS
 -----
 * Check exports from ETS != 5.7
+* MDT GT
+    * Nice documentation
+    * Nice examples
+    * Evaluate kurz/lang and print both
+    * Layout other than 2*6
+    * Notify LED / Message usage
+    * Good tests
+    * Good test coverage
 
 
 
