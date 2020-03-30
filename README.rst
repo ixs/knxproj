@@ -1,10 +1,32 @@
+.. highlight:: shell
+
 =======
 Knxproj
 =======
 
+Unzip a knxproj and read the xml files.
 
-Tampering with a knx project
+Intro in a nutshell
+------------------------------------
+0. Install python3 and pipenv
+1. Clone this repository
 
+.. code-block:: console
+
+    $ git clone git://github.com/fgoettel/knxproj
+
+2. Install the virtual environment
+
+.. code-block:: console
+
+    $ pipenv install
+
+3. Explore the examples, e.g.,
+
+.. code-block:: console
+
+    $ pipenv shell
+    $ python knxproj/examples/example_read_switches.py /Path/To/project.knxproj
 
 
 Features
@@ -16,6 +38,7 @@ Features
 TODOS
 -----
 * Check exports from ETS != 5.7
+* Check on Windows
 * MDT GT
     * Nice documentation
     * Nice examples
