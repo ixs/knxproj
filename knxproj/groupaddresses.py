@@ -68,8 +68,8 @@ class Factory:
         except KeyError:
             logging.error("All Datapoints need an assigned DatapointType.")
             logging.error("'%s' has no dtype.", xml.attrib["Name"])
-            logging.error("Future errors can occur.")
-            raise
+            # Warning: This can lead to problems down the chain
+            dtype = "DPST-1-1"
 
         return GroupAddress(
             id_=xml.attrib["Id"].replace(self.prefix, ""),

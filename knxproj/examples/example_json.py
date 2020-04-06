@@ -1,24 +1,27 @@
 """Read a knxproj and dump it to a json file."""
 
+import argparse
 import json
 import logging
-import sys
 from collections import OrderedDict
 from pathlib import Path
 
 from knxproj.knxproj import KnxprojLoader
 
 
-def main(knxproj_path, json_path="knx_mapping.json"):
+def main(json_path="knx_mapping.json"):
     """Dump a dictionary that links group_addresses to data types."""
+    # Setup argument parser
+    description = "Generate documentation for a KNX project based on its ETS export."
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("path", type=str, help="Path to the ETS .knxproj export.")
 
-    # If a path is provided, take it.
-    try:
-        knxproj_path = sys.argv[1]
-    except IndexError:
-        pass
+    # Parse arguments
+    args = parser.parse_args()
+    knxproj_path = Path(args.path)
 
-    group_addresses, _ = KnxprojLoader(knxproj_path=Path(knxproj_path)).run()
+    # Run
+    group_addresses, _ = KnxprojLoader(knxproj_path=knxproj_path).run()
 
     # Iterate over group addresses and create mapping
     groupaddress_to_dtype = {}
@@ -36,4 +39,4 @@ def main(knxproj_path, json_path="knx_mapping.json"):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main(sys.argv[1])
+    main()
