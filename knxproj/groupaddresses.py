@@ -69,7 +69,7 @@ class Factory:
             logging.error("All Datapoints need an assigned DatapointType.")
             logging.error("'%s' has no dtype.", xml.attrib["Name"])
             # Warning: This can lead to problems down the chain
-            dtype = "DPST-1-1"
+            dtype = "unknown"
 
         return GroupAddress(
             id_=xml.attrib["Id"].replace(self.prefix, ""),
