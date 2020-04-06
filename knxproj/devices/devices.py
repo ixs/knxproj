@@ -10,6 +10,11 @@ from ..topology import Device
 class Switch(Device, ABC):
     """Abstract switch class."""
 
+    width = 50
+    vsep = "|"
+    hsep = "-"
+    border = "="
+
     @abstractclassmethod
     def from_device(cls, device, *args, **kwargs):
         """Create a switch from a generic device."""

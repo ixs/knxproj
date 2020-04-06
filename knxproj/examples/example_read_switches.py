@@ -20,10 +20,10 @@ def main():
     knxproj_path = Path(args.path)
 
     # Generic, non-vendor specific
-    _, devices = KnxprojLoader(knxproj_path=knxproj_path).run()
+    gas, devices = KnxprojLoader(knxproj_path=knxproj_path).run()
 
     # Get in the vendor specifics
-    devices = [dev2vendor(dev) for dev in devices]
+    devices = [dev2vendor(dev, gas) for dev in devices]
 
     logging.info("Switches:")
     for dev in devices:

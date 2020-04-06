@@ -10,6 +10,45 @@ from .devices import Switch
 
 
 @attr.s
+class BE4(Switch):
+    """MDT Tasterschnittstelle."""
+
+    gas = attr.ib(factory=list)
+
+    @classmethod
+    def from_device(cls, device, *args, **kwargs):
+        """Create a MDT Glastaster 2 from a generic device."""
+
+        return cls(gas=kwargs["gas"], **vars(device))
+
+    def find_ga(self, id_):
+        """Find the complete GA to a given id."""
+        for groupaddress in self.gas:
+            if groupaddress.id_ == id_:
+                return groupaddress
+        raise ValueError("Unknown ga id_.")
+
+    def doc(self):
+        """Dcoument connected GAs."""
+        hline = self.border * self.width
+        hline_small = self.hsep * self.width
+
+        gas = []
+        for ga_id in self.groupaddress_list:
+            gas.append("=> " + ga_id + self.find_ga(ga_id).name)
+
+        conns = (hline_small + "\n").join(gas)
+
+        switch = f"""
+{self.name}
+{hline}
+{conns}
+{hline}
+"""
+        print(switch)
+
+
+@attr.s
 class GT2(Switch):
     """MDT Glastaster 2."""
 
@@ -81,12 +120,11 @@ class GT2(Switch):
             raise Exception(lines)
 
         # Formatting
-        width = max(map(len, [line0, line1, line2]))
-        width = 50
-        button_l = "|    | "
-        button_r = " |    |"
-        hline = (width + len(button_l) + len(button_r)) * "="
-        hline_small = len(hline) * "-"
+        button_space = "    "
+        button_l = self.vsep + button_space + self.vsep + " "
+        button_r = " " + self.vsep + button_space + self.vsep
+        hline = (self.width + len(button_l) + len(button_r)) * self.border
+        hline_small = len(hline) * self.hsep
 
         # Count pages
         def page_count_fcn(line_x):
@@ -100,11 +138,11 @@ class GT2(Switch):
             switch = f"""
 {name}
 {hline}
-{button_l}{line0[idx].center(width)}{button_r}
+{button_l}{line0[idx].center(self.width)}{button_r}
 {hline_small}
-{button_l}{line1[idx].center(width)}{button_r}
+{button_l}{line1[idx].center(self.width)}{button_r}
 {hline_small}
-{button_l}{line2[idx].center(width)}{button_r}
+{button_l}{line2[idx].center(self.width)}{button_r}
 {hline}
 """
             print(switch)
