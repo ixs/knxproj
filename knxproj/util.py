@@ -7,12 +7,13 @@ from typing import Optional
 import attr
 from attr.validators import instance_of
 
-# The ETS namespace depend on the ETS version.
-# Right now only ETS 5.7 is supported.
-# The xml structure between ETS 5.6 and 5.7 changed.
-ETS_NAMESPACES = {
+# Project namespaces, currently supported:
+#  - ETS 5.7
+#  - Gira GPA (April 2020)
+PROJECT_NAMESPACES = {
     "ets56": "http://knx.org/xml/project/14",
     "ets57": "http://knx.org/xml/project/20",
+    "gpa": "http://service.schema.gira.de/configuration",
 }
 
 
@@ -71,7 +72,7 @@ class FinderXml:
             keyword_ns = keyword
 
         # Find all items
-        items = xml.findall(keyword_ns, namespaces=ETS_NAMESPACES)
+        items = xml.findall(keyword_ns, namespaces=PROJECT_NAMESPACES)
         if expected_count:
             assert len(items) == expected_count
 

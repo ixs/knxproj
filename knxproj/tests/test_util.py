@@ -3,7 +3,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from ..util import ETS_NAMESPACES, FinderXml, postfix, to_list
+from ..util import PROJECT_NAMESPACES, FinderXml, postfix, to_list
 from .util import (  # noqa: F401  # pylint:disable=unused-import
     get_groupaddress,
     param_bools,
@@ -21,7 +21,7 @@ def test_finder_xml(namespace, expected_count):
     # Setup xml
     xml = ET.Element("KNX")
     if namespace:
-        xml.attrib["xmlns"] = ETS_NAMESPACES[namespace]
+        xml.attrib["xmlns"] = PROJECT_NAMESPACES[namespace]
     # Add keyword / value
     keyword = "Foo"
     payload = {"Bar": "Baz"}
