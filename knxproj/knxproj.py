@@ -3,11 +3,10 @@
 import logging
 import tempfile
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Tuple
 from zipfile import ZipFile
-
-import attr
 
 from .groupaddresses import Factory as GAFactory
 from .groupaddresses import GroupAddress
@@ -17,29 +16,19 @@ from .topology import Line
 from .util import FinderXml
 
 
-@attr.s
+@dataclass
 class KnxprojLoader:
     """Extract a .knxproj and read project information."""
 
     # Without defaults
-    knxproj_path: Path = attr.ib(converter=Path)
+    knxproj_path: Path
 
     # With defaults
-    project_file: str = attr.ib(default="0")
+    project_file: str = "0"
 
     # Non-initialized values
-    finder = attr.ib(init=False, default=None)
-    project_prefix = attr.ib(init=False, default=None)
-
-    @knxproj_path.validator
-    def verify_knxproj_path(self, _, value):  # pylint: disable=no-self-use
-        """Validate the knxproj path."""
-        if not value.is_file():
-            raise FileNotFoundError("No knxproj found at {}.".format(value.resolve()))
-
-        if value.suffix.lower() != ".knxproj":
-            raise ValueError("Provided file is not a knxproj.")
-        logging.debug("Knxproj exists at %s.", value)
+    finder: FinderXml = field(init=False)
+    project_prefix: str = field(init=False)
 
     def run(self) -> Tuple[List[GroupAddress], List[Device]]:
         """Extract groupaddresses and devices from knxproj."""
@@ -153,7 +142,7 @@ class KnxprojLoader:
                         gruppenaddresse_all.append(gruppenaddresse)
                         logging.debug("GA\t\t\t%s", gruppenaddresse)
 
-            gruppenaddresse_all.sort(key=lambda x: x.id_)
+            gruppenaddresse_all.sort(key=lambda x: x.id_str)
             for addr in gruppenaddresse_all:
                 logging.debug(addr)
 
@@ -163,7 +152,7 @@ class KnxprojLoader:
             topo_xml: ET.Element,
         ) -> Tuple[List[Area], List[Line], List[Device]]:
             """Get topology from xml."""
-            topo_factory = TOFactory(self.project_prefix, self.finder)
+            topo_factory = TOFactory(prefix=self.project_prefix, finder=self.finder)
 
             area_list = []
             line_list = []

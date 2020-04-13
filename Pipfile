@@ -19,7 +19,6 @@ wheel = "*"
 pytest = "*"
 
 [packages]
-attrs = "*"
 knxproj = {editable = true,path = "./"}
 
 [requires]

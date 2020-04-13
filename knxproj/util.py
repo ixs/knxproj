@@ -1,11 +1,8 @@
 """Provide the base attributes of an KNX element."""
 
 import xml.etree.ElementTree as ET
-from collections.abc import Iterable
+from dataclasses import dataclass
 from typing import Optional
-
-import attr
-from attr.validators import instance_of
 
 # Project namespaces, currently supported:
 #  - ETS 5.7
@@ -22,39 +19,28 @@ def postfix(prefix: str, sep: str = "_") -> str:
     return "".join((prefix, sep))
 
 
-def to_list(in_) -> list:
-    """Convert an instance to a list if its not a list."""
-    if isinstance(in_, list):
-        return in_
-
-    if isinstance(in_, Iterable) and not isinstance(in_, str):
-        return list(in_)
-
-    return [in_]
-
-
-@attr.s
+@dataclass
 class KNXBase:
     """Class with all common knx information."""
 
-    id_ = attr.ib(validator=instance_of(str))
-    name = attr.ib(validator=instance_of(str))
+    id_str: str
+    name: str
 
 
-@attr.s
+@dataclass
 class KNXAddress(KNXBase):
     """KNXBase w/ address."""
 
-    address = attr.ib(converter=int, validator=instance_of(int))
+    address: int
 
 
-@attr.s(auto_attribs=True)
 class FinderXml:
     """Create a namespaced xml findall."""
 
-    # Should be an ets namespace
-    # i.e. "ets56" or "ets57"
-    namespace: Optional[str] = None
+    def __init__(self, namespace=""):
+        """Initialize Find function."""
+        assert (namespace in PROJECT_NAMESPACES.keys()) or (namespace == "")
+        self.namespace = namespace
 
     def __call__(
         self, xml: ET.Element, keyword: str, expected_count: Optional[int] = None

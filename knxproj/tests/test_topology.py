@@ -33,7 +33,7 @@ def test_factory_device_addr(use_addr, get_topo_factory, xml_knx, line):
     device = get_topo_factory.device(xml_knx, line)
     assert isinstance(device, Device)
 
-    assert device.id_ == xml_knx.attrib["Id"]
+    assert device.id_str == xml_knx.attrib["Id"]
     assert device.name == xml_knx.attrib["Name"]
     assert device.address == expected_addr
     assert device.groupaddress_list == []
@@ -57,7 +57,7 @@ def test_factory_find_connections(valid_gas, get_topo_factory, xml_knx, line):
     device = get_topo_factory.device(xml_knx, line)
 
     assert isinstance(device, Device)
-    assert device.id_ == xml_knx.attrib["Id"]
+    assert device.id_str == xml_knx.attrib["Id"]
     assert device.name == xml_knx.attrib["Name"]
     assert device.address == xml_knx.attrib["Address"]
     assert device.groupaddress_list == expected_gas
@@ -69,7 +69,7 @@ def test_factory_line(get_topo_factory, xml_knx, area):
     line = get_topo_factory.line(xml=xml_knx, area=area)
 
     assert isinstance(line, Line)
-    assert line.id_ == xml_knx.attrib["Id"]
+    assert line.id_str == xml_knx.attrib["Id"]
     assert line.address == xml_knx.attrib["Address"]
     assert line.name == xml_knx.attrib["Name"]
     assert line.medium == xml_knx.attrib["MediumTypeRefId"]
@@ -80,6 +80,6 @@ def test_factory_area(get_topo_factory, xml_knx):
     area = get_topo_factory.area(xml_knx)
 
     assert isinstance(area, Area)
-    assert area.id_ == xml_knx.attrib["Id"]
+    assert area.id_str == xml_knx.attrib["Id"]
     assert area.address == xml_knx.attrib["Address"]
     assert area.name == xml_knx.attrib["Name"]

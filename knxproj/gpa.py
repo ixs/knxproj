@@ -4,21 +4,20 @@ import logging
 import re
 import tempfile
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass
 from pathlib import Path
 from zipfile import ZipFile
-
-import attr
 
 from .groupaddresses import GroupAddress
 from .util import FinderXml
 
 
-@attr.s
+@dataclass
 class GpaLoader:
     """Extra a .gpa project and read GA information."""
 
-    gpa_path: Path = attr.ib(converter=Path)
     finder = FinderXml("gpa")
+    gpa_path: Path
 
     def run(self):
         """Extract all knx datapoints from a gpa project."""
@@ -68,8 +67,8 @@ class GpaLoader:
             root = ET.parse(str(ga_xml)).getroot()
             assert "KnxDataPoint" in root.tag
             id_ = self.finder(root, "EntityId", 1).text
-            ga_rx = self.finder(root, "ReadGroupAddress", 1).text
-            ga_tx = self.finder(root, "WriteGroupAddress", 1).text
+            ga_rx = int(self.finder(root, "ReadGroupAddress", 1).text)
+            ga_tx = int(self.finder(root, "WriteGroupAddress", 1).text)
             name = self.finder(root, "EntityName", 1).text
             dtype = self.finder(root, "DataTypeKnx", 1).text
             tmp = dtype.split(".")
@@ -78,12 +77,12 @@ class GpaLoader:
             if dtype_sub == "":
                 dtype_sub = "0"
             dtype_str = "-".join(("DPST", dtype_main, dtype_sub))
-            if ga_rx != "0":
+            if ga_rx != 0:
                 gas.append(
-                    GroupAddress(id_=id_, name=name, address=ga_rx, dtype=dtype_str)
+                    GroupAddress(id_str=id_, name=name, address=ga_rx, dtype=dtype_str)
                 )
-            if ga_rx not in ("0", ga_rx):
+            if ga_rx not in (0, ga_rx):
                 gas.append(
-                    GroupAddress(id_=id_, name=name, address=ga_tx, dtype=dtype_str)
+                    GroupAddress(id_str=id_, name=name, address=ga_tx, dtype=dtype_str)
                 )
         return gas

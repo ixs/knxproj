@@ -97,7 +97,7 @@ def _get_id():
 
 
 def _get_area():
-    return Area(id_=_get_id(), address=_get_address(), name=_get_name_str())
+    return Area(id_str=_get_id(), address=_get_address(), name=_get_name_str())
 
 
 def _get_name_str():
@@ -109,7 +109,7 @@ def _get_name_str():
 def get_groupaddress():
     """Get a randomized group address."""
     return GroupAddress(
-        id_=_get_id(),
+        id_str=_get_id(),
         address=_get_address(),
         name=_get_name_str(),
         dtype=random.choice(param_dtypes),
@@ -152,7 +152,7 @@ def area():
 def line():
     """Get a valid knx topology 'Line'."""
     return Line(
-        id_=_get_id(),
+        id_str=_get_id(),
         address=_get_address(),
         name=_get_name_str(),
         medium=random.choice(param_medium),

@@ -3,7 +3,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from ..util import PROJECT_NAMESPACES, FinderXml, postfix, to_list
+from ..util import PROJECT_NAMESPACES, FinderXml, postfix
 from .util import (  # noqa: F401  # pylint:disable=unused-import
     get_groupaddress,
     param_bools,
@@ -15,7 +15,7 @@ from .util import (  # noqa: F401  # pylint:disable=unused-import
 
 
 @pytest.mark.parametrize("expected_count", [None, 0, 1, 10])
-@pytest.mark.parametrize("namespace", [None, "ets56", "ets57"])
+@pytest.mark.parametrize("namespace", ["", "ets56", "ets57"])
 def test_finder_xml(namespace, expected_count):
     """Test the finder function with namespace variation."""
     # Setup xml
@@ -45,7 +45,7 @@ def test_finder_xml(namespace, expected_count):
 
     # TODO: Fix special treatment of 1 finding
     if expected_count == 1:
-        result = to_list(result)
+        result = [result]
     assert isinstance(result, list)
 
     for res in result:
@@ -56,23 +56,6 @@ def test_postfix():
     """Test that the separator is properly attended."""
     assert postfix("foo") == "foo_"
     assert postfix("foo", "+") == "foo+"
-
-
-def test_to_list():
-    """Test the "to_list" function."""
-    in_ = 12
-    actual = to_list(in_)
-    assert [in_] == actual
-    assert isinstance(actual, list)
-
-    in_ = [12]
-    assert in_ == to_list(in_)
-
-    in_ = "ab"
-    assert [in_] == to_list(in_)
-
-    in_ = (12, 34)
-    assert [12, 34] == to_list(in_)
 
 
 if __name__ == "__main__":

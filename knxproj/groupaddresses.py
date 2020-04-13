@@ -1,22 +1,20 @@
 """Classes and helpers related to the KNX groupaddresses."""
 
 import logging
+from dataclasses import dataclass
 from xml.etree.ElementTree import Element as xml_element
-
-import attr
-from attr.validators import instance_of
 
 from .util import KNXAddress, postfix
 
 
-@attr.s
+@dataclass
 class GroupAddress(KNXAddress):
     """KNX GA.
 
     Assumes we're living in the 3-stufig-world.
     """
 
-    dtype = attr.ib(validator=instance_of(str))
+    dtype: str
 
     @property
     def main(self) -> int:
@@ -44,11 +42,12 @@ class GroupAddress(KNXAddress):
         return "/".join((f"{self.main}", f"{self.middle}", f"{self.sub}"))
 
 
-@attr.s
 class Factory:
     """Factory to create items from xml."""
 
-    prefix = attr.ib(converter=postfix)
+    def __init__(self, prefix):
+        """Create factory."""
+        self.prefix = postfix(prefix)
 
     def groupaddress(self, xml: xml_element) -> GroupAddress:
         """Create a group adress from a xml."""
@@ -61,8 +60,8 @@ class Factory:
             dtype = "unknown"
 
         return GroupAddress(
-            id_=xml.attrib["Id"].replace(self.prefix, ""),
-            address=xml.attrib["Address"],
+            id_str=xml.attrib["Id"].replace(self.prefix, ""),
+            address=int(xml.attrib["Address"]),
             name=xml.attrib["Name"],
             dtype=dtype,
         )

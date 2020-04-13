@@ -3,39 +3,41 @@
 
 import logging
 import re
-
-import attr
+from dataclasses import dataclass
 
 from .devices import Switch
 
 
-@attr.s
+@dataclass
 class BE4(Switch):
     """MDT Tasterschnittstelle."""
 
-    gas = attr.ib(factory=list)
+    def __init__(self, project_ga_list, *args, **kwargs):
+        """Create a MDT binary interface."""
+        super().__init__(*args, **kwargs)
+        self.project_ga_list = project_ga_list
 
     @classmethod
     def from_device(cls, device, *args, **kwargs):
         """Create a MDT Glastaster 2 from a generic device."""
 
-        return cls(gas=kwargs["gas"], **vars(device))
+        return cls(project_ga_list=kwargs["project_ga_list"], **vars(device))
 
     def find_ga(self, id_):
         """Find the complete GA to a given id."""
-        for groupaddress in self.gas:
-            if groupaddress.id_ == id_:
+        for groupaddress in self.project_ga_list:
+            if groupaddress.id_str == id_:
                 return groupaddress
         raise ValueError("Unknown ga id_.")
 
     def doc(self):
-        """Dcoument connected GAs."""
+        """Document connected GAs."""
         hline = self.border * self.width
         hline_small = self.hsep * self.width
 
         gas = []
-        for ga_id in self.groupaddress_list:
-            gas.append("=> " + ga_id + self.find_ga(ga_id).name)
+        for connected_ga_id in self.groupaddress_list:
+            gas.append("=> " + connected_ga_id + self.find_ga(connected_ga_id).name)
 
         conns = (hline_small + "\n").join(gas)
 
@@ -48,11 +50,8 @@ class BE4(Switch):
         print(switch)
 
 
-@attr.s
 class GT2(Switch):
     """MDT Glastaster 2."""
-
-    texts = attr.ib(factory=list)
 
     line0_re = re.compile(
         r"^(?P<nr>T1|T2|T1/2)(\s?(?P<duration>kurz|lang))?:\s(?P<description>.*)$"
@@ -75,6 +74,11 @@ class GT2(Switch):
 
     status_re = re.compile(r"^(?P<description>(Statustext|Meldung)\s.+)$")
     led_re = re.compile(r"^LED\s(?P<description>.*)$")
+
+    def __init__(self, texts, *args, **kwargs):
+        """Create a MDT GT2."""
+        super().__init__(*args, **kwargs)
+        self.texts = texts
 
     @classmethod
     def from_device(cls, device, *args, **kwargs):

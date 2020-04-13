@@ -1,24 +1,27 @@
 """Generic device types."""
-from abc import ABC, abstractclassmethod, abstractmethod
-
-import attr
+from dataclasses import dataclass
 
 from ..topology import Device
 
+# pylint: disable=useless-super-delegation
 
-@attr.s
-class Switch(Device, ABC):
+
+@dataclass
+class Switch(Device):
     """Abstract switch class."""
+
+    def __init__(self, *args, **kwargs):
+        """Create a switch."""
+        super().__init__(*args, **kwargs)
 
     width = 50
     vsep = "|"
     hsep = "-"
     border = "="
 
-    @abstractclassmethod
+    @classmethod
     def from_device(cls, device, *args, **kwargs):
         """Create a switch from a generic device."""
 
-    @abstractmethod
     def doc(self):
         """Print documentation."""
