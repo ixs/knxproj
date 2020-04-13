@@ -6,51 +6,42 @@ from xml.etree.ElementTree import Element as xml_element
 import attr
 from attr.validators import instance_of
 
-from .util import KNXAddress, KNXBase, postfix
-
-
-@attr.s
-class GroupRange(KNXBase):
-    """KNX group range, covers "Hauptgruppe" and "Mittelgruppe"."""
-
-    limits = attr.ib(validator=instance_of(tuple))
-
-    @limits.validator
-    def range_validate(self, _, value):
-        # pylint: disable=no-self-use
-        """Validate the range.
-
-        The range must consist of a tuple of ints, where
-        the first element is smaller than the second.
-        """
-        assert len(value) == 2
-        start = value[0]
-        end = value[1]
-
-        assert isinstance(start, int)
-        assert isinstance(end, int)
-        assert start < end
+from .util import KNXAddress, postfix
 
 
 @attr.s
 class GroupAddress(KNXAddress):
-    """KNX GA."""
+    """KNX GA.
+
+    Assumes we're living in the 3-stufig-world.
+    """
 
     dtype = attr.ib(validator=instance_of(str))
-    mittelgruppe: GroupRange = attr.ib(validator=instance_of(GroupRange))
-    hauptgruppe: GroupRange = attr.ib(validator=instance_of(GroupRange))
+
+    @property
+    def main(self) -> int:
+        """Return the main group."""
+        bitmask = 0b1111100000000000
+        shift = 11
+        return (self.address & bitmask) >> shift
+
+    @property
+    def middle(self) -> int:
+        """Return the middle group."""
+        bitmask = 0b11100000000
+        shift = 8
+        return (self.address & bitmask) >> shift
+
+    @property
+    def sub(self) -> int:
+        """Return the sub group."""
+        bitmask = 0b11111111
+        return self.address & bitmask
 
     def get_ga_str(self) -> str:
         """Create a/b/c groupaddress out of the integer."""
-        mg_start = self.mittelgruppe.limits[0]
-        hg_start = self.hauptgruppe.limits[0]
-        return "/".join(
-            (
-                f"{(hg_start/2048):.0f}",
-                f"{((mg_start-hg_start)/256):.0f}",
-                f"{(self.address-mg_start):.0f}",
-            )
-        )
+
+        return "/".join((f"{self.main}", f"{self.middle}", f"{self.sub}"))
 
 
 @attr.s
@@ -59,9 +50,7 @@ class Factory:
 
     prefix = attr.ib(converter=postfix)
 
-    def groupaddress(
-        self, xml: xml_element, hauptgruppe: GroupRange, mittelgruppe: GroupRange
-    ) -> GroupAddress:
+    def groupaddress(self, xml: xml_element) -> GroupAddress:
         """Create a group adress from a xml."""
         try:
             dtype = xml.attrib["DatapointType"]
@@ -76,17 +65,4 @@ class Factory:
             address=xml.attrib["Address"],
             name=xml.attrib["Name"],
             dtype=dtype,
-            hauptgruppe=hauptgruppe,
-            mittelgruppe=mittelgruppe,
-        )
-
-    def grouprange(self, xml: xml_element) -> GroupRange:
-        """Create a Grouprange from a xml."""
-        start = int(xml.attrib["RangeStart"])
-        end = int(xml.attrib["RangeEnd"])
-
-        return GroupRange(
-            id_=xml.attrib["Id"].replace(self.prefix, ""),
-            name=xml.attrib["Name"],
-            limits=(start, end),
         )

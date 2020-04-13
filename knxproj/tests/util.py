@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 import pytest
 
 from ..groupaddresses import Factory as ga_factory
-from ..groupaddresses import GroupAddress, GroupRange
+from ..groupaddresses import GroupAddress
 from ..topology import Area
 from ..topology import Factory as topo_factory
 from ..topology import Line
@@ -96,10 +96,6 @@ def _get_id():
     return str(random.randrange(0, 99999))
 
 
-def _get_grouprange():
-    return GroupRange(id_=_get_id(), name=_get_name_str(), limits=_get_limits())
-
-
 def _get_area():
     return Area(id_=_get_id(), address=_get_address(), name=_get_name_str())
 
@@ -110,12 +106,6 @@ def _get_name_str():
 
 
 @pytest.fixture
-def get_grouprange():
-    """Get a Grouprange."""
-    return _get_grouprange()
-
-
-@pytest.fixture
 def get_groupaddress():
     """Get a randomized group address."""
     return GroupAddress(
@@ -123,8 +113,6 @@ def get_groupaddress():
         address=_get_address(),
         name=_get_name_str(),
         dtype=random.choice(param_dtypes),
-        mittelgruppe=_get_grouprange(),
-        hauptgruppe=_get_grouprange(),
     )
 
 
@@ -142,11 +130,8 @@ def get_topo_factory():
 
 @pytest.fixture()
 def xml_knx(dtype="DPST-1-1"):
-    """Create a xml for a group range."""
-    start, end = _get_limits()
+    """Create a xml for a knx element."""
     xml_ = ET.Element(PREFIX)
-    xml_.attrib["RangeStart"] = start
-    xml_.attrib["RangeEnd"] = end
     xml_.attrib["DatapointType"] = dtype
     xml_.attrib["Id"] = _get_id()
     xml_.attrib["Name"] = _get_name_str()

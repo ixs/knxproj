@@ -10,7 +10,7 @@ from zipfile import ZipFile
 import attr
 
 from .groupaddresses import Factory as GAFactory
-from .groupaddresses import GroupAddress, GroupRange
+from .groupaddresses import GroupAddress
 from .topology import Area, Device
 from .topology import Factory as TOFactory
 from .topology import Line
@@ -132,14 +132,10 @@ class KnxprojLoader:
 
             return (topology_xml, groupaddress_xml)
 
-        def groupaddresses(
-            groups_xml: ET.Element,
-        ) -> Tuple[List[GroupRange], List[GroupRange], List[GroupAddress]]:
+        def groupaddresses(groups_xml: ET.Element,) -> List[GroupAddress]:
             """Get group addresses from xml."""
             ga_factory = GAFactory(self.project_prefix)
 
-            hauptgruppe_all = []
-            mittelgruppe_all = []
             gruppenaddresse_all = []
 
             # We expect only one grouprange
@@ -148,20 +144,12 @@ class KnxprojLoader:
             # Extract group ranges
             for hg_xml in self.finder(grs_xml, "GroupRange"):
                 # Hauptgruppen
-                hauptgruppe = ga_factory.grouprange(hg_xml)
-                hauptgruppe_all.append(hauptgruppe)
-                logging.debug("HG\t%s", hauptgruppe)
 
                 for mg_xml in self.finder(hg_xml, "GroupRange"):
                     # Mittelgruppen
-                    mittelgruppe = ga_factory.grouprange(mg_xml)
-                    mittelgruppe_all.append(mittelgruppe)
-                    logging.debug("MG\t\t%s", mittelgruppe)
 
                     for ga_xml in self.finder(mg_xml, "GroupAddress"):
-                        gruppenaddresse = ga_factory.groupaddress(
-                            ga_xml, mittelgruppe=mittelgruppe, hauptgruppe=hauptgruppe
-                        )
+                        gruppenaddresse = ga_factory.groupaddress(ga_xml)
                         gruppenaddresse_all.append(gruppenaddresse)
                         logging.debug("GA\t\t\t%s", gruppenaddresse)
 
@@ -169,7 +157,7 @@ class KnxprojLoader:
             for addr in gruppenaddresse_all:
                 logging.debug(addr)
 
-            return (hauptgruppe_all, mittelgruppe_all, gruppenaddresse_all)
+            return gruppenaddresse_all
 
         def topology(
             topo_xml: ET.Element,
@@ -204,6 +192,6 @@ class KnxprojLoader:
             return (area_list, line_list, device_list)
 
         topo_xml, ga_xml = get_xml()
-        (_, _, gas) = groupaddresses(ga_xml)
+        ga_list = groupaddresses(ga_xml)
         (_, _, devices) = topology(topo_xml)
-        return (gas, devices)
+        return (ga_list, devices)
