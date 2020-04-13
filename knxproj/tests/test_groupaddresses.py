@@ -23,7 +23,7 @@ def test_grouprange(get_grouprange):
 
     for limits in [(1,), ("eins", 2), (1, "zwei"), (2, 1)]:
         with pytest.raises(AssertionError):
-            GroupRange("foo", "bar", 42, limits)
+            GroupRange("foo", "bar", limits)
 
 
 def test_groupaddress(get_groupaddress):
@@ -38,8 +38,8 @@ def test_groupaddress(get_groupaddress):
 
     # Fix assumptions on group range
     addr = copy(get_groupaddress)
-    addr.mittelgruppe = GroupRange(id_="", name="", puid=0, limits=(0, 512))
-    addr.hauptgruppe = GroupRange(id_="", name="", puid=0, limits=(0, 65536))
+    addr.mittelgruppe = GroupRange(id_="", name="", limits=(0, 512))
+    addr.hauptgruppe = GroupRange(id_="", name="", limits=(0, 65536))
 
     for input_, excpected in (
         (0, "0/0/0"),

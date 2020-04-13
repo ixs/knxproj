@@ -75,7 +75,6 @@ class Factory:
             id_=xml.attrib["Id"].replace(self.prefix, ""),
             address=xml.attrib["Address"],
             name=xml.attrib["Name"],
-            puid=xml.attrib["Puid"],
             dtype=dtype,
             hauptgruppe=hauptgruppe,
             mittelgruppe=mittelgruppe,
@@ -89,6 +88,5 @@ class Factory:
         return GroupRange(
             id_=xml.attrib["Id"].replace(self.prefix, ""),
             name=xml.attrib["Name"],
-            puid=xml.attrib["Puid"],
             limits=(start, end),
         )

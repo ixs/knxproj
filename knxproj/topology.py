@@ -78,7 +78,6 @@ class Factory:
         return Device(
             id_=self._find_id(xml),
             name=xml.attrib["Name"],
-            puid=xml.attrib["Puid"],
             address=xml.attrib.get("Address", DEFAULT_ADDR),
             product_id=xml.attrib["ProductRefId"],
             groupaddress_list=gas,
@@ -92,7 +91,6 @@ class Factory:
             id_=self._find_id(xml),
             area=area,
             name=xml.attrib["Name"],
-            puid=xml.attrib["Puid"],
             address=xml.attrib["Address"],
             medium=xml.attrib["MediumTypeRefId"],
         )
@@ -102,6 +100,5 @@ class Factory:
         return Area(
             id_=self._find_id(xml),
             name=xml.attrib["Name"],
-            puid=xml.attrib["Puid"],
             address=xml.attrib["Address"],
         )

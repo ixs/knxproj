@@ -38,7 +38,6 @@ class KNXBase:
 
     id_ = attr.ib(validator=instance_of(str))
     name = attr.ib(validator=instance_of(str))
-    puid = attr.ib(converter=int, validator=instance_of(int))
 
 
 @attr.s
