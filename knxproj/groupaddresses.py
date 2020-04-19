@@ -56,8 +56,7 @@ class Factory:
         except KeyError:
             logging.error("All Datapoints need an assigned DatapointType.")
             logging.error("'%s' has no dtype.", xml.attrib["Name"])
-            # Warning: This can lead to problems down the chain
-            dtype = "unknown"
+            raise
 
         return GroupAddress(
             id_str=xml.attrib["Id"].replace(self.prefix, ""),

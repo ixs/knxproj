@@ -41,9 +41,13 @@ def main():
         logging.debug(ga_str(rhs))
 
         addr_ok = lhs.address == rhs.address
-        dtype_ok = (
-            lhs.dtype == rhs.dtype
-        )  # TODO: 1.1 is as good as 1.11 (and other exceptions)
+        # TODO: Rework
+        lhs_dtype_split = lhs.dtype.split("-")
+        rhs_dtype_split = rhs.dtype.split("-")
+        assert lhs_dtype_split[0] == "DPST"
+        assert rhs_dtype_split[0] == "DPST"
+        dtype_ok = lhs_dtype_split[1] == rhs_dtype_split[1]
+        #
         name_ok = (lhs.name in rhs.name) or (rhs.name in lhs.name)
 
         if not all((addr_ok, dtype_ok, name_ok)):
@@ -62,7 +66,8 @@ def main():
         try:
             ga_compare(gpa_dict[key], ets_dict[key])
         except KeyError:
-            logging.error(f"GA in gpa but not ets: {gpa_dict[key]}!")
+            ga_missing = gpa_dict[key]
+            logging.error(f"GA in gpa but not ets: {ga_missing.get_ga_str()} - {ga_missing}!")
 
 
 if __name__ == "__main__":
