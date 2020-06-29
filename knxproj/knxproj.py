@@ -26,6 +26,9 @@ class KnxprojLoader:
     # With defaults
     project_file: str = "0"
 
+    # Be forgiving when parsing
+    parse_lenient: bool = field(default=False)
+
     # Non-initialized values
     finder: FinderXml = field(init=False)
     project_prefix: str = field(init=False)
@@ -123,7 +126,7 @@ class KnxprojLoader:
 
         def groupaddresses(groups_xml: ET.Element,) -> List[GroupAddress]:
             """Get group addresses from xml."""
-            ga_factory = GAFactory(self.project_prefix)
+            ga_factory = GAFactory(self.project_prefix, self.parse_lenient)
 
             gruppenaddresse_all = []
 

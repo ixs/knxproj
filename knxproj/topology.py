@@ -6,6 +6,7 @@ from typing import List, Tuple
 from xml.etree.ElementTree import Element
 
 from .util import KNXAddress, postfix
+from .groupaddresses import GroupAddress
 
 DEFAULT_ADDR = 99
 
@@ -54,7 +55,7 @@ class Factory:
         # Find top level references
         comobjs_xml = self.finder(xml, "ComObjectInstanceRefs")
         if not comobjs_xml:
-            logging.info("%s has no references.", xml)
+            logging.info("%s has no references.", xml.attrib['Id'])
             return groupaddress_list, text_list
 
         # Find each single connected ga

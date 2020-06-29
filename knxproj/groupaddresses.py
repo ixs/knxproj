@@ -45,9 +45,10 @@ class GroupAddress(KNXAddress):
 class Factory:
     """Factory to create items from xml."""
 
-    def __init__(self, prefix):
+    def __init__(self, prefix, parse_lenient):
         """Create factory."""
         self.prefix = postfix(prefix)
+        self.parse_lenient = parse_lenient
 
     def groupaddress(self, xml: xml_element) -> GroupAddress:
         """Create a group adress from a xml."""
@@ -56,7 +57,9 @@ class Factory:
         except KeyError:
             logging.error("All Datapoints need an assigned DatapointType.")
             logging.error("'%s' has no dtype.", xml.attrib["Name"])
-            raise
+            dtype = None
+            if not self.parse_lenient:
+                raise
 
         return GroupAddress(
             id_str=xml.attrib["Id"].replace(self.prefix, ""),
