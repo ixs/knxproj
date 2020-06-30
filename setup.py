@@ -27,7 +27,6 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     description="Tampering with a knx project",
-    entry_points={"console_scripts": ["knxproj=knxproj.cli:main"]},
     install_requires=requirements,
     long_description=readme + "\n\n" + history,
     include_package_data=True,
