@@ -55,11 +55,14 @@ class Factory:
         try:
             dtype = xml.attrib["DatapointType"]
         except KeyError:
-            logging.error("All Datapoints need an assigned DatapointType.")
-            logging.error("'%s' has no dtype.", xml.attrib["Name"])
-            dtype = None
             if not self.parse_lenient:
+                logging.error("All Datapoints need an assigned DatapointType.")
+                logging.error("'%s' has no dtype.", xml.attrib["Name"])
                 raise
+            else:
+                dtype = None
+                logging.warn("'%s' has no dtype.", xml.attrib["Name"])
+
 
         return GroupAddress(
             id_str=xml.attrib["Id"].replace(self.prefix, ""),
